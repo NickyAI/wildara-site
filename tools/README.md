@@ -1,18 +1,37 @@
 # Wildara site tooling
 
-The website in `../Site` is plain static HTML/CSS/JS. Nothing here is needed to run or host it.
-These scripts regenerate parts of it. They need Python 3 with `Pillow` and `python-docx`
-(`pip install Pillow python-docx`).
+`Site/` is plain static HTML/CSS/JS. These Python scripts generate and test it. Install the optional dependencies with `pip install -r tools/requirements.txt`.
 
-| Script | What it does |
-| --- | --- |
-| `proc.py` | Converts every photo in `../Media` to responsive WebP (`-s` 640w, `-m` 1280w, `-l` up to 2400w) in `Site/assets/img`. |
-| `parse.py` | Reads the itinerary `.docx` files in `../Itineraries` into `Site/assets/data/safaris.json`. |
-| `polish.py` | Tidies titles, assigns photos to each safari, and computes "from" prices. Run it after `parse.py`. |
-| `build.py` | Expands the page templates in `src/` into `Site/*.html`. Edit the templates in `src/`, not the built HTML, if you plan to rebuild. |
+## Build pipeline
 
-After running `parse.py` and `polish.py`, regenerate the data file the pages load:
+| Step | Script | When to run | Needs |
+|---|---|---|---|
+| 1 | `proc.py` | new/changed photos in `../Media`: WebP in 4 sizes (`-s` 640, `-t` 960, `-m` 1280, `-l` ≤2400) | Pillow |
+| 2 | `og.py` | after `proc.py`: 1200×630 JPEG share images in `Site/assets/og/` | Pillow |
+| 3 | `parse.py` → `polish.py` → `routes.py` | itinerary `.docx` changes: data, photos, map routes and FAQs → `safaris.json` + `safaris-data.js` | python-docx |
+| 4 | `build.py` | **any template, content or config change**: writes every page, `sitemap.xml`, `robots.txt`, `.htaccess` | stdlib only |
+
+`build.py` reads `site.json` (production URL, Search Console token, default share image), `htaccess` (server rules) and the templates in `src/`. Edit those, not the generated files in `Site/` (except `Site/assets/` CSS/JS/data, which are source files).
+
+## Local preview
 
 ```sh
-echo "window.WILDARA_SAFARIS=$(cat ../Site/assets/data/safaris.json);" > ../Site/assets/js/safaris-data.js
+python3 tools/serve.py 8080
 ```
+
+Mirrors Hostinger: directory index, `/dir` → `/dir/`, real 404 page, no directory listings, hidden files refused, gzip, and the exact security headers from `.htaccess`.
+
+## Tests (start `serve.py` first)
+
+| Command | Checks |
+|---|---|
+| `python3 tools/tests/smoke.py` | every sitemap URL in Chrome (desktop + mobile): status, JS/CSP errors, failed requests, one H1, canonical, og:image, duplicates, overflow |
+| `python3 tools/tests/links.py` | every internal link/asset/srcset resolves; orphan pages |
+| `python3 tools/tests/seo.py` | sitemap, robots, metadata lengths/duplicates, JSON-LD required fields (no server needed) |
+| `python3 tools/tests/a11y.py` | axe-core WCAG 2.1 A/AA on every page type |
+| `python3 tools/tests/responsive.py` | 13 widths (320–2560) × 15 page types, horizontal overflow |
+| `python3 tools/tests/browsers.py` | Chrome, WebKit, Firefox (`playwright install webkit firefox` once) |
+| `python3 tools/tests/interactions.py` | planner, contact, filters, booking stepper, menu, lightbox |
+| `python3 tools/tests/perf.py` | lab LCP/CLS/TBT on simulated mobile 4G |
+
+All exit non-zero on failure, so they can run in CI.
