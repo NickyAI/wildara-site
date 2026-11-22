@@ -7,11 +7,8 @@
   var DEST = window.WILDARA_DESTINATIONS || [], EXP = window.WILDARA_EXPERIENCES || [], JOUR = window.WILDARA_JOURNAL || [], SAF = window.WILDARA_SAFARIS || [];
   var page = document.body.getAttribute('data-page');
   var q = new URLSearchParams(location.search);
+  var PAGE_ID = document.body.getAttribute('data-id');
   function byId(list, id) { return list.filter(function (x) { return x.id === id; })[0]; }
-  function setMeta(title, desc) {
-    document.title = title + ' · Wildara Africa Safaris';
-    var m = document.querySelector('meta[name="description"]'); if (m && desc) m.content = desc.slice(0, 158);
-  }
   function heroImg(name) { return WA.img(name, '100vw', '', 'fetchpriority="high" loading="eager"'); }
   function list(items, cls) { return '<ul class="' + (cls || 'notes') + '">' + items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>'; }
   function notFound(kind, back, label) {
@@ -45,7 +42,7 @@
     var grid = $('#destGrid');
     function draw(group) {
       grid.innerHTML = DEST.filter(function (d) { return !group || DEST_GROUP[d.id] === group; }).map(function (d, i) {
-        return WA.ccardHTML({ href: 'destination.html?id=' + d.id, img: d.hero, pill: DEST_GROUP[d.id], meta: d.kicker, title: d.name, text: d.excerpt, cta: 'Explore ' + d.short, d: i % 3, cls: (!group && i === 0) ? 'ccard--wide' : '' });
+        return WA.ccardHTML({ href: WA.link('destinations', d.id), img: d.hero, pill: DEST_GROUP[d.id], meta: d.kicker, title: d.name, text: d.excerpt, cta: 'Explore ' + d.short, d: i % 3, cls: (!group && i === 0) ? 'ccard--wide' : '' });
       }).join('');
       WA.observe(grid);
     }
@@ -58,14 +55,14 @@
     DEST.forEach(function (d) { d.mapKeys.forEach(function (k) { if (!keyToDest[k]) keyToDest[k] = d; }); });
     function preview(k) {
       var d = keyToDest[k]; if (!d) return;
-      card.innerHTML = '<div class="dest-card__img"><img src="assets/img/' + d.hero + '-m.webp" alt=""></div><div class="dest-card__body"><small>' + esc(d.kicker) + '</small><h3>' + esc(d.name) + '</h3><p>' + esc(d.excerpt) + '</p><a class="link-u" href="destination.html?id=' + d.id + '">Discover ' + esc(d.short) + ' ' + WA.ARROW + '</a></div>';
+      card.innerHTML = '<div class="dest-card__img"><img src="' + WA.u('assets/img/') + d.hero + '-m.webp" alt=""></div><div class="dest-card__body"><small>' + esc(d.kicker) + '</small><h3>' + esc(d.name) + '</h3><p>' + esc(d.excerpt) + '</p><a class="link-u" href="' + WA.link('destinations', d.id) + '">Discover ' + esc(d.short) + ' ' + WA.ARROW + '</a></div>';
     }
-    WA.map($('#destMap'), { mode: 'explore', onSelect: preview, link: function (k) { return keyToDest[k] ? 'destination.html?id=' + keyToDest[k].id : null; } });
+    WA.map($('#destMap'), { mode: 'explore', onSelect: preview, link: function (k) { return keyToDest[k] ? WA.link('destinations', keyToDest[k].id) : null; } });
     preview('serengeti');
 
     // when-to-go matrix
     $('#whenTable').innerHTML = '<thead><tr><th scope="col">Destination</th>' + MON.map(function (m, i) { return '<th scope="col" title="' + MONL[i] + '"><abbr title="' + MONL[i] + '">' + m + '</abbr></th>'; }).join('') + '</tr></thead><tbody>' +
-      DEST.map(function (d) { return '<tr><th scope="row"><a href="destination.html?id=' + d.id + '">' + esc(d.short) + '</a></th>' + WHEN[d.id].map(function (v, i) { return '<td><span class="lvl lvl-' + v + '" title="' + MONL[i] + ': ' + LEVEL[v] + '"><span class="sr-only">' + MONL[i] + ': ' + LEVEL[v] + '</span></span></td>'; }).join('') + '</tr>'; }).join('') + '</tbody>';
+      DEST.map(function (d) { return '<tr><th scope="row"><a href="' + WA.link('destinations', d.id) + '">' + esc(d.short) + '</a></th>' + WHEN[d.id].map(function (v, i) { return '<td><span class="lvl lvl-' + v + '" title="' + MONL[i] + ': ' + LEVEL[v] + '"><span class="sr-only">' + MONL[i] + ': ' + LEVEL[v] + '</span></span></td>'; }).join('') + '</tr>'; }).join('') + '</tbody>';
 
     var faqs = [
       { q: 'Which Tanzania destinations should I combine on a first safari?', a: 'The classic northern circuit pairs Tarangire, Lake Manyara or Ngorongoro Crater with the Serengeti. Five to seven days lets you experience elephants among baobabs, the Crater’s extraordinary density of wildlife and the open plains of the Serengeti without feeling rushed. Add Zanzibar at the end if you would like to unwind by the sea.' },
@@ -80,37 +77,36 @@
      DESTINATION SINGLE
      ====================================================================== */
   function destination() {
-    var d = byId(DEST, q.get('id'));
-    if (!d) return notFound('destination', 'destinations.html', 'See all destinations');
-    setMeta(d.name, d.tagline + ' ' + d.excerpt);
+    var d = byId(DEST, PAGE_ID || q.get('id'));
+    if (!d) return notFound('destination', WA.link('destinations'), 'See all destinations');
     var idx = DEST.indexOf(d), next = DEST[(idx + 1) % DEST.length], prev = DEST[(idx - 1 + DEST.length) % DEST.length];
-    $('#hBg').innerHTML = heroImg(d.hero);
+    if (!$('#hBg img')) $('#hBg').innerHTML = heroImg(d.hero);
     $('#hCrumb').textContent = d.short;
     $('#hKicker').textContent = d.kicker + ' · ' + d.region;
     var h1 = $('#hTitle'); h1.textContent = d.name; WA.splitText(h1);
     $('#hLead').textContent = d.tagline;
-    $$('[data-plan]').forEach(function (a) { a.href = 'plan.html?dest=' + d.id; });
+    $$('[data-plan]').forEach(function (a) { a.href = WA.link('plan', null, 'dest=' + d.id); });
 
     $('#dIntro').innerHTML = d.intro.map(function (p, i) { return '<p' + (i === 0 ? ' class="first"' : '') + ' data-reveal style="--d:' + i + '">' + esc(p) + '</p>'; }).join('');
     $('#dFacts').innerHTML = d.facts.map(function (f) { return '<div><small>' + esc(f.label) + '</small><b>' + esc(f.value) + '</b></div>'; }).join('');
     $('#dGallery').innerHTML = WA.sliderHTML(d.images, d.name); WA.initSlider($('#dGallery'));
-    $('#dHigh').innerHTML = d.highlights.map(function (h, i) { return '<div class="hl" data-reveal style="--d:' + (i % 3) + '"><span>' + ['i.', 'ii.', 'iii.', 'iv.', 'v.', 'vi.'][i] + '</span><h3>' + esc(h.title) + '</h3><p>' + esc(h.text) + '</p></div>'; }).join('') + '<div class="hl" data-reveal style="--d:2"><span>Your journey</span><h3>Ready to see it for yourself?</h3><p>Every Wildara itinerary can be shaped around ' + esc(d.short) + '. Tell us your dates and we will design the route.</p><a class="btn btn--light" href="plan.html?dest=' + d.id + '" style="margin-top:1.2rem">Plan a safari here ' + WA.ARROW + '</a></div>';
+    $('#dHigh').innerHTML = d.highlights.map(function (h, i) { return '<div class="hl" data-reveal style="--d:' + (i % 3) + '"><span>' + ['i.', 'ii.', 'iii.', 'iv.', 'v.', 'vi.'][i] + '</span><h3>' + esc(h.title) + '</h3><p>' + esc(h.text) + '</p></div>'; }).join('') + '<div class="hl" data-reveal style="--d:2"><span>Your journey</span><h3>Ready to see it for yourself?</h3><p>Every Wildara itinerary can be shaped around ' + esc(d.short) + '. Tell us your dates and we will design the route.</p><a class="btn btn--light" href="' + WA.link('plan', null, 'dest=' + d.id) + '" style="margin-top:1.2rem">Plan a safari here ' + WA.ARROW + '</a></div>';
     $('#dWild').innerHTML = d.wildlife.map(function (w) { return '<li>' + esc(w) + '</li>'; }).join('');
     $('#dTips').innerHTML = list(d.tips);
     $('#dSeasons').innerHTML = d.seasons.map(function (s, i) { return '<div class="scard2" data-reveal style="--d:' + i + '"><small>' + esc(s.period) + '</small><h3>' + esc(s.title) + '</h3><p>' + esc(s.text) + '</p></div>'; }).join('');
     $('#dWhen').innerHTML = WHEN[d.id].map(function (v, i) { return '<div class="whenbar__m"><span class="lvl lvl-' + v + '"></span><small>' + MONL[i].slice(0, 3) + '</small><span class="sr-only">' + LEVEL[v] + '</span></div>'; }).join('');
-    WA.map($('#dMap'), { mode: 'focus', focus: d.mapKeys, label: 'Map showing ' + d.name, link: function (k) { var t = DEST.filter(function (x) { return x.mapKeys.indexOf(k) > -1; })[0]; return t ? 'destination.html?id=' + t.id : null; } });
+    WA.map($('#dMap'), { mode: 'focus', focus: d.mapKeys, label: 'Map showing ' + d.name, link: function (k) { var t = DEST.filter(function (x) { return x.mapKeys.indexOf(k) > -1; })[0]; return t ? WA.link('destinations', t.id) : null; } });
     $('#dStay').innerHTML = d.stay.map(function (s, i) { return '<div class="stay" data-reveal style="--d:' + i + '"><small>' + esc(s.type) + '</small><h3>' + esc(s.name) + '</h3><p>' + esc(s.text) + '</p></div>'; }).join('');
     var saf = destSafaris(d);
     $('#safCount').textContent = saf.length ? saf.length + ' journeys include ' + d.short : '';
     track('dTrack', saf);
     var exps = EXP.filter(function (e) { return e.where.some(function (w) { return w.dest === d.id; }); }).slice(0, 3);
-    if (exps.length) $('#dExp').innerHTML = exps.map(function (e, i) { var w = e.where.filter(function (x) { return x.dest === d.id; })[0]; return WA.ccardHTML({ href: 'experience.html?id=' + e.id, img: e.hero, meta: e.category, title: e.title, text: w.text, d: i }); }).join('');
+    if (exps.length) $('#dExp').innerHTML = exps.map(function (e, i) { var w = e.where.filter(function (x) { return x.dest === d.id; })[0]; return WA.ccardHTML({ href: WA.link('experiences', e.id), img: e.hero, meta: e.category, title: e.title, text: w.text, d: i }); }).join('');
     else $('#dExp').closest('section').hidden = true;
     $('#dFaq').innerHTML = WA.faqHTML(d.faqs); WA.faqSchema(d.faqs);
     $('#faqTitle').innerHTML = esc(d.short) + ', <em>answered.</em>';
-    $('#nextLink').href = 'destination.html?id=' + next.id; $('#nextName').textContent = next.name; $('#nextImg').innerHTML = WA.img(next.hero, '50vw', '');
-    $('#prevLink').href = 'destination.html?id=' + prev.id; $('#prevName').textContent = prev.name;
+    $('#nextLink').href = WA.link('destinations', next.id); $('#nextName').textContent = next.name; $('#nextImg').innerHTML = WA.img(next.hero, '50vw', '');
+    $('#prevLink').href = WA.link('destinations', prev.id); $('#prevName').textContent = prev.name;
     subnav();
   }
 
@@ -121,7 +117,7 @@
     var grid = $('#expGrid');
     function draw(cat) {
       grid.innerHTML = EXP.filter(function (e) { return !cat || e.category === cat; }).map(function (e, i) {
-        return WA.ccardHTML({ href: 'experience.html?id=' + e.id, img: e.hero, pill: e.category, meta: e.kicker, title: e.title, text: e.excerpt, cta: 'Discover', d: i % 3, cls: (!cat && (i === 0 || i === 4)) ? 'ccard--wide' : '' });
+        return WA.ccardHTML({ href: WA.link('experiences', e.id), img: e.hero, pill: e.category, meta: e.kicker, title: e.title, text: e.excerpt, cta: 'Discover', d: i % 3, cls: (!cat && (i === 0 || i === 4)) ? 'ccard--wide' : '' });
       }).join('');
       WA.observe(grid);
     }
@@ -141,10 +137,9 @@
      EXPERIENCE SINGLE
      ====================================================================== */
   function experience() {
-    var e = byId(EXP, q.get('id'));
-    if (!e) return notFound('experience', 'experiences.html', 'See all experiences');
-    setMeta(e.title, e.tagline + ' ' + e.excerpt);
-    $('#hBg').innerHTML = heroImg(e.hero);
+    var e = byId(EXP, PAGE_ID || q.get('id'));
+    if (!e) return notFound('experience', WA.link('experiences'), 'See all experiences');
+    if (!$('#hBg img')) $('#hBg').innerHTML = heroImg(e.hero);
     $('#hCrumb').textContent = e.title;
     $('#hKicker').textContent = e.category + ' · ' + e.kicker;
     var h1 = $('#hTitle'); h1.textContent = e.title; WA.splitText(h1);
@@ -155,7 +150,7 @@
     $('#eMoments').innerHTML = e.moments.map(function (m, i) { return '<div class="moment" data-reveal style="--d:' + i + '"><h3>' + esc(m.title) + '</h3><p>' + esc(m.text) + '</p></div>'; }).join('');
     $('#eWhere').innerHTML = e.where.map(function (w, i) {
       var d = byId(DEST, w.dest); if (!d) return '';
-      return WA.ccardHTML({ href: 'destination.html?id=' + d.id, img: d.hero, meta: d.kicker, title: d.name, text: w.text, cta: 'Explore ' + d.short, d: i });
+      return WA.ccardHTML({ href: WA.link('destinations', d.id), img: d.hero, meta: d.kicker, title: d.name, text: w.text, cta: 'Explore ' + d.short, d: i });
     }).join('');
     $('#eGallery').innerHTML = WA.sliderHTML([e.hero].concat(e.images), e.title); WA.initSlider($('#eGallery'));
     $('#eGood').innerHTML = list(e.goodToKnow);
@@ -163,9 +158,9 @@
       : safarisFor(function (s) { return (s.route || []).some(function (r) { return e.where.some(function (w) { var d = byId(DEST, w.dest); return d && d.mapKeys.indexOf(r.k) > -1; }); }); }).slice(0, 10);
     track('eTrack', saf);
     $('#eFaq').innerHTML = WA.faqHTML(e.faqs); WA.faqSchema(e.faqs);
-    $$('[data-plan]').forEach(function (a) { a.href = 'plan.html?experience=' + e.id; });
+    $$('[data-plan]').forEach(function (a) { a.href = WA.link('plan', null, 'experience=' + e.id); });
     var others = EXP.filter(function (x) { return x !== e; }).slice(0, 3);
-    $('#eMore').innerHTML = others.map(function (x, i) { return WA.ccardHTML({ href: 'experience.html?id=' + x.id, img: x.hero, meta: x.category, title: x.title, text: x.excerpt, d: i }); }).join('');
+    $('#eMore').innerHTML = others.map(function (x, i) { return WA.ccardHTML({ href: WA.link('experiences', x.id), img: x.hero, meta: x.category, title: x.title, text: x.excerpt, d: i }); }).join('');
   }
 
   /* ======================================================================
@@ -174,11 +169,11 @@
   function journal() {
     var posts = JOUR.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
     var f = posts[0];
-    $('#jFeature').innerHTML = '<a class="jfeature" href="article.html?id=' + f.id + '" data-reveal><div class="jfeature__img">' + WA.img(f.hero, '(max-width: 900px) 92vw, 60vw', '') + '</div><div class="jfeature__body"><span class="ccard__meta">Latest · ' + esc(f.category) + '</span><h2>' + esc(f.title) + '</h2><p>' + esc(f.excerpt) + '</p><p class="jmeta">' + WA.fmtDate(f.date) + ' · ' + f.readMins + ' min read</p><span class="btn">Read the guide ' + WA.ARROW + '</span></div></a>';
+    $('#jFeature').innerHTML = '<a class="jfeature" href="' + WA.link('journal', f.id) + '" data-reveal><div class="jfeature__img">' + WA.img(f.hero, '(max-width: 900px) 92vw, 60vw', '') + '</div><div class="jfeature__body"><span class="ccard__meta">Latest · ' + esc(f.category) + '</span><h2>' + esc(f.title) + '</h2><p>' + esc(f.excerpt) + '</p><p class="jmeta">' + WA.fmtDate(f.date) + ' · ' + f.readMins + ' min read</p><span class="btn">Read the guide ' + WA.ARROW + '</span></div></a>';
     var grid = $('#jGrid');
     function draw(cat) {
       grid.innerHTML = posts.filter(function (p) { return (!cat && p !== f) || p.category === cat; }).map(function (p, i) {
-        return WA.ccardHTML({ href: 'article.html?id=' + p.id, img: p.hero, pill: p.category, meta: WA.fmtDate(p.date) + ' · ' + p.readMins + ' min read', title: p.title, text: p.excerpt, cta: 'Read', d: i % 3 });
+        return WA.ccardHTML({ href: WA.link('journal', p.id), img: p.hero, pill: p.category, meta: WA.fmtDate(p.date) + ' · ' + p.readMins + ' min read', title: p.title, text: p.excerpt, cta: 'Read', d: i % 3 });
       }).join('');
       WA.observe(grid);
     }
@@ -191,10 +186,9 @@
      ARTICLE
      ====================================================================== */
   function article() {
-    var a = byId(JOUR, q.get('id'));
-    if (!a) return notFound('article', 'journal.html', 'Visit the Safari Journal');
-    setMeta(a.title, a.excerpt);
-    $('#hBg').innerHTML = heroImg(a.hero);
+    var a = byId(JOUR, PAGE_ID || q.get('id'));
+    if (!a) return notFound('article', WA.link('journal'), 'Visit the Safari Journal');
+    if (!$('#hBg img')) $('#hBg').innerHTML = heroImg(a.hero);
     $('#hCrumb').textContent = a.category;
     $('#hKicker').textContent = a.category;
     var h1 = $('#hTitle'); h1.textContent = a.title; WA.splitText(h1);
@@ -208,9 +202,6 @@
     }).join('') + '<h2 id="faqs">Frequently asked questions</h2>' + WA.faqHTML(a.faqs);
     WA.faqSchema(a.faqs);
     $('#aToc').innerHTML = '<small>In this guide</small>' + a.sections.map(function (s) { return '<a href="#' + slug(s.h) + '">' + esc(s.h) + '</a>'; }).join('') + '<a href="#faqs">FAQs</a>';
-    var ld = document.createElement('script'); ld.type = 'application/ld+json';
-    ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Article', headline: a.title, datePublished: a.date, author: { '@type': 'Organization', name: 'Wildara Africa Safaris' }, description: a.excerpt });
-    document.head.appendChild(ld);
     // toc active state + reading progress
     var heads = $$('#aBody h2'), links = $$('#aToc a'), bar = $('#readBar');
     window.addEventListener('scroll', function () {
@@ -222,7 +213,7 @@
     if (!saf.length) saf = SAF.slice(10, 18);
     track('aTrack', saf.slice(0, 10));
     var more = JOUR.filter(function (x) { return x !== a; }).sort(function (x, y) { return (y.category === a.category) - (x.category === a.category); }).slice(0, 3);
-    $('#aMore').innerHTML = more.map(function (p, i) { return WA.ccardHTML({ href: 'article.html?id=' + p.id, img: p.hero, meta: p.category + ' · ' + p.readMins + ' min', title: p.title, text: p.excerpt, cta: 'Read', d: i }); }).join('');
+    $('#aMore').innerHTML = more.map(function (p, i) { return WA.ccardHTML({ href: WA.link('journal', p.id), img: p.hero, meta: p.category + ' · ' + p.readMins + ' min', title: p.title, text: p.excerpt, cta: 'Read', d: i }); }).join('');
   }
 
   /* sticky sub-nav active state */

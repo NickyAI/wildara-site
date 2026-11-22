@@ -8,7 +8,7 @@
 [[nav:light-static]]
 
 <main id="main" class="plan">
-  <aside class="plan__side" aria-hidden="true">
+  <div class="plan__side">
     <img data-step-img="0" src="assets/img/giraffes-tall-m.webp" alt="" width="1280" height="1918">
     <img data-step-img="1" class="is-out" src="assets/img/lone-acacia-herd-m.webp" alt="" width="1280" height="720" loading="lazy">
     <img data-step-img="2" class="is-out" src="assets/img/boy-vehicle-m.webp" alt="" width="1280" height="853" loading="lazy">
@@ -18,7 +18,7 @@
       <h1 style="margin-top:1rem">Your journey starts with a <em>conversation.</em></h1>
       <p>Four short steps. No payment, no obligation. A real person in Arusha will reply with ideas shaped around you.</p>
     </div>
-  </aside>
+  </div>
 
   <div class="plan__main">
     <div class="progress" aria-hidden="true">
@@ -27,6 +27,7 @@
     </div>
 
     <form id="planForm" novalidate>
+        <div class="hp" aria-hidden="true"><label>Leave this field empty<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
       <!-- STEP 1 -->
       <section class="step is-active" data-step="0" aria-labelledby="st1">
         <span class="eyebrow">01 · Inspiration</span>

@@ -217,9 +217,11 @@
      5. FEATURED SAFARIS
      ====================================================================== */
   (function () {
-    var track = $('#featuredTrack'); if (!track || !window.WILDARA_SAFARIS) return;
-    var byId = {}; window.WILDARA_SAFARIS.forEach(function (s) { byId[s.id] = s; });
-    track.innerHTML = track.dataset.featured.split(',').map(function (id) { return byId[id] ? WA.cardHTML(byId[id]) : ''; }).join('');
+    var track = $('#featuredTrack'); if (!track) return;
+    if (!track.querySelector('.scard') && window.WILDARA_SAFARIS) {   // normally pre-rendered by the build
+      var byId = {}; window.WILDARA_SAFARIS.forEach(function (s) { byId[s.id] = s; });
+      track.innerHTML = track.dataset.featured.split(',').map(function (id) { return byId[id] ? WA.cardHTML(byId[id]) : ''; }).join('');
+    }
     WA.initTrack(track, $('[data-track-prev]'), $('[data-track-next]'), $('.track__progress span'));
   })();
 
@@ -246,24 +248,24 @@
       clearTimeout(timer);
       var apply = function () {
         $('#destKicker').textContent = d.k; $('#destName').textContent = d.n; $('#destText').textContent = d.t;
-        $('#destLink').href = 'destination.html?id=' + key;
-        imgEl.src = 'assets/img/' + d.img + '-m.webp'; imgEl.alt = d.n;
+        $('#destLink').href = WA.link('destinations', key);
+        imgEl.src = WA.u('assets/img/') + d.img + '-m.webp'; imgEl.alt = d.n;
         imgEl.classList.remove('is-out'); body.classList.remove('is-out');
       };
       if (instant || reduce) return apply();
       imgEl.classList.add('is-out'); body.classList.add('is-out');
-      var pre = new Image(); pre.src = 'assets/img/' + d.img + '-m.webp';
+      var pre = new Image(); pre.src = WA.u('assets/img/') + d.img + '-m.webp';
       timer = setTimeout(apply, 380);
     }
-    var m = WA.map(host, { mode: 'explore', onSelect: function (k) { show(k); }, link: function (k) { return 'destination.html?id=' + (ALIAS[k] || k); } });
+    var m = WA.map(host, { mode: 'explore', onSelect: function (k) { show(k); }, link: function (k) { return WA.link('destinations', ALIAS[k] || k); } });
     show('serengeti', true); m.setActive('serengeti');
   })();
 
   /* journal teaser */
   (function () {
-    var el = $('#homeJournal'); if (!el || !window.WILDARA_JOURNAL) return;
+    var el = $('#homeJournal'); if (!el || el.children.length || !window.WILDARA_JOURNAL) { if (el) WA.observe(el); return; }   // pre-rendered by the build
     el.innerHTML = window.WILDARA_JOURNAL.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; }).slice(0, 3).map(function (p, i) {
-      return WA.ccardHTML({ href: 'article.html?id=' + p.id, img: p.hero, pill: p.category, meta: WA.fmtDate(p.date) + ' · ' + p.readMins + ' min read', title: p.title, text: p.excerpt, cta: 'Read', d: i });
+      return WA.ccardHTML({ href: WA.link('journal', p.id), img: p.hero, pill: p.category, meta: WA.fmtDate(p.date) + ' · ' + p.readMins + ' min read', title: p.title, text: p.excerpt, cta: 'Read', d: i });
     }).join('');
     WA.observe(el);
   })();
@@ -300,13 +302,13 @@
         $('#seasonMonth').textContent = s.m; $('#seasonTitle').textContent = s.title; $('#seasonText').textContent = s.t;
         $('#seasonRegion').textContent = s.region;
         $('#seasonTags').innerHTML = s.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('');
-        $('#seasonLink').href = s.theme ? 'safaris.html?theme=' + s.theme : 'safaris.html';
-        imgEl.src = 'assets/img/' + s.img + '-m.webp'; imgEl.alt = s.title + ', ' + s.region;
+        $('#seasonLink').href = WA.link('safaris', null, s.theme ? 'theme=' + s.theme : '');
+        imgEl.src = WA.u('assets/img/') + s.img + '-m.webp'; imgEl.alt = s.title + ', ' + s.region;
         imgEl.classList.remove('is-out'); body.classList.remove('is-out');
       };
       if (reduce || !imgEl.getAttribute('data-init')) { imgEl.setAttribute('data-init', '1'); return apply(); }
       imgEl.classList.add('is-out'); body.classList.add('is-out');
-      var pre = new Image(); pre.src = 'assets/img/' + s.img + '-m.webp';
+      var pre = new Image(); pre.src = WA.u('assets/img/') + s.img + '-m.webp';
       clearTimeout(timer); timer = setTimeout(apply, 380);
     }
     tabs.forEach(function (t, i) {

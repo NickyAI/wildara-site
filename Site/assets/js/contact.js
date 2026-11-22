@@ -25,6 +25,10 @@
     if (!c.checked) { ok = false; first = first || c; }
     if (!ok) { first.focus(); return; }
     var data = { type: 'contact', name: $('#cName').value, email: $('#cEmail').value, phone: $('#cPhone').value, topic: $('#cTopic').value, message: $('#cMsg').value, submittedAt: new Date().toISOString() };
+    var btn = form.querySelector('button[type="submit"]');
+    if (btn.disabled) return;                       // no double submits
+    btn.disabled = true; btn.setAttribute('aria-busy', 'true');
+    if (form.elements.company_website && form.elements.company_website.value) { done(); return; }   // honeypot
     function done() {
       form.hidden = true; var t = $('#cThanks'); t.classList.add('is-active');
       $('#cThanksMsg').textContent = 'Thank you, ' + data.name.split(' ')[0] + '. We will reply to ' + data.email + ' within one working day.';
@@ -33,7 +37,7 @@
     if (CFG.formEndpoint) {
       fetch(CFG.formEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) })
         .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
-        .catch(function () { WA.toast('We couldn’t send that just now. Please try again in a moment.'); });
+        .catch(function () { btn.disabled = false; btn.removeAttribute('aria-busy'); WA.toast('We couldn’t send that just now. Please try again in a moment.'); });
     } else done();
   });
   $$('#cName, #cEmail, #cMsg').forEach(function (el) { el.addEventListener('input', function () { el.closest('.field').classList.remove('is-invalid'); }); });

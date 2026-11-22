@@ -2,15 +2,6 @@
 <html lang="en">
 <head>
 [[head:Wildara Africa Safaris · Private Tanzania Safaris|Private safaris across northern Tanzania. Serengeti, Ngorongoro, Tarangire, the Great Migration and Zanzibar, shaped around you by Wildara Africa Safaris.]]
-<script>
-  /* Intro plays once per session, never for reduced motion */
-  (function () {
-    var d = document.documentElement, seen = false;
-    try { seen = sessionStorage.getItem('wa-intro') === '1'; } catch (e) {}
-    var rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!seen && !rm && !/[?&]nointro/.test(location.search)) d.classList.add('intro-on');
-  })();
-</script>
 <link rel="preload" as="image" href="assets/video/giraffe-poster.webp">
 </head>
 <body class="home">
@@ -405,6 +396,6 @@
 [[footer]]
 [[lightbox]]
 [[chrome]]
-[[scripts:safaris-data,content-journal,main,map,home]]
+[[scripts:main,map,home]]
 </body>
 </html>

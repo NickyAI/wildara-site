@@ -21,7 +21,7 @@
       return;
     }
     if (!safari) { box.innerHTML = ''; return; }
-    box.innerHTML = '<div class="selected-safari"><img src="assets/img/' + safari.images[0] + '-s.webp" alt=""><div><small>Enquiring about</small><b>' + esc(safari.title) + '</b><small style="letter-spacing:.1em">' + safari.days + ' days · from ' + WA.money(safari.from) + ' pp</small></div><button type="button" aria-label="Remove selected safari">✕</button></div>';
+    box.innerHTML = '<div class="selected-safari"><img src="' + WA.u('assets/img/') + safari.images[0] + '-s.webp" alt=""><div><small>Enquiring about</small><b>' + esc(safari.title) + '</b><small style="letter-spacing:.1em">' + safari.days + ' days · from ' + WA.money(safari.from) + ' pp</small></div><button type="button" aria-label="Remove selected safari">✕</button></div>';
     $('button', box).addEventListener('click', function () { safari = null; renderChosen(); });
   }
   renderChosen();
@@ -120,6 +120,7 @@
     if (cur < 3) { go(cur + 1); return; }
     if (!validate()) return;
     var data = collect();
+    if (form.elements.company_website && form.elements.company_website.value) { showThanks(data); return; }   // honeypot: bots fill hidden fields
     next.disabled = true;
     var done = function () { next.disabled = false; showThanks(data); };
     if (CFG.formEndpoint) {

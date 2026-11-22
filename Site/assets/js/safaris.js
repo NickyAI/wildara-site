@@ -39,7 +39,7 @@
     var draw = function () {
       grid.innerHTML = list.length ? list.map(function (s, i) {
         return WA.cardHTML(s, i % 6 === 0 ? '(max-width: 760px) 92vw, 66vw' : '(max-width: 760px) 92vw, (max-width: 1100px) 46vw, 31vw');
-      }).join('') : '<div class="empty"><h3>Nothing on this trail, yet.</h3><p>Try widening your filters, or <a class="amber" href="plan.html" style="text-decoration:underline">ask us to design one</a>.</p></div>';
+      }).join('') : '<div class="empty"><h3>Nothing on this trail, yet.</h3><p>Try widening your filters, or <a class="amber" href="' + WA.link('plan') + '" style="text-decoration:underline">ask us to design one</a>.</p></div>';
       $$('.scard', grid).forEach(function (c, i) { c.setAttribute('data-reveal', ''); c.style.setProperty('--d', i % 3); });
       WA.observe(grid);
     };

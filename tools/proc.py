@@ -8,9 +8,9 @@ meta={}
 for f,n in zip(fs,names):
     im=ImageOps.exif_transpose(Image.open(f)).convert("RGB")
     w,h=im.size; meta[n]=[w,h]
-    for tw in (640,1280,2400):
-        if tw>w: tw=w
-        r=im.resize((tw,round(h*tw/w)),Image.LANCZOS)
-        r.save(f"{O}{n}-{ {640:'s',1280:'m'}.get(tw,'l') if tw in (640,1280) else 'l'}.webp","WEBP",quality=82 if tw<2400 else 80,method=6)
+    for tw, suffix, q in ((640, "s", 82), (960, "t", 82), (1280, "m", 82), (2400, "l", 80)):
+        tw = min(tw, w)
+        r = im.resize((tw, round(h * tw / w)), Image.LANCZOS)
+        r.save(f"{O}{n}-{suffix}.webp", "WEBP", quality=q, method=6)
     print(n, flush=True)
 json.dump(meta,open(O+"../data/img-meta.json","w"))

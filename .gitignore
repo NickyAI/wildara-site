@@ -16,3 +16,6 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Test artefacts
+tools/tests/.axe.min.js

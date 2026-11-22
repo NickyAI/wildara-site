@@ -20,12 +20,24 @@ window.WILDARA_CONFIG = {
   var lerp = function (a, b, t) { return a + (b - a) * t; };
   var CFG = window.WILDARA_CONFIG;
   var IMG_W = { 'giraffe-pair': 1818 };
+  // intrinsic height at 1280px width (prevents layout shift) and descriptive alt text, per photo
+  var IMG_H = {"giraffe-pair":1600,"binocular-girls":853,"sunset-acacia":720,"elephant-mara":853,"migration-crossing":1220,"wildebeest-walk":853,"buffalo-serengeti":853,"buffalo-birds":853,"cheetah-mound":854,"cheetahs-resting":853,"child-binoculars":853,"sundowner-couple":852,"elephant-vehicle":853,"elephants-pair":850,"giraffes-tall":1917,"lone-acacia-herd":720,"elephant-herd":853,"zebra-herd":853,"lion-lioness":853,"lioness-grass":852,"lions-resting":854,"lone-tree":852,"ostrich-tree":1920,"silhouette-vehicle":918,"sunset-tree":854,"boy-vehicle":853,"zanzibar-dhow":845,"migration-watchers":851,"zanzibar-pier":960,"zanzibar-turquoise":720,"zanzibar-aerial":977,"zebras-mist":1280,"wildebeest-grass":853,"zebras-pair":854};
+  var IMG_ALT = {"giraffe-pair":"Two giraffes browsing among acacia bushes under a blue sky","binocular-girls":"Two travellers scanning the plains through binoculars from a safari vehicle","sunset-acacia":"A lone acacia silhouetted against a deep orange sunset","elephant-mara":"An elephant and her calf walking through golden grass","migration-crossing":"Wildebeest leaping into a river during the Great Migration crossing","wildebeest-walk":"Blue wildebeest walking across dusty plains in warm light","buffalo-serengeti":"A Cape buffalo standing in tall grass on the Serengeti","buffalo-birds":"A Cape buffalo with oxpeckers in a golden field","cheetah-mound":"A cheetah surveying the Serengeti from a termite mound","cheetahs-resting":"Two cheetahs resting on a mound in the savannah","child-binoculars":"A young traveller looking through binoculars across the plains","sundowner-couple":"A couple raising a sundowner toast on a lodge terrace at sunset","elephant-vehicle":"Guests in an open safari vehicle watching an elephant nearby","elephants-pair":"Two elephants standing together on open grassland","giraffes-tall":"Two giraffes standing close together in tall golden grass","lone-acacia-herd":"Buffalo grazing beneath a lone acacia tree on the Serengeti plains","elephant-herd":"A herd of elephants walking beneath acacia trees in Tarangire","zebra-herd":"A herd of zebras standing in dry golden grass","lion-lioness":"A lion and lioness walking side by side through tall grass","lioness-grass":"A lioness moving through long golden grass","lions-resting":"A lion and lioness resting together on a grassy rise","lone-tree":"A solitary acacia tree in golden grassland under a blue sky","ostrich-tree":"An ostrich in tall grass with a lone tree behind it","silhouette-vehicle":"A traveller standing on a safari vehicle beneath an acacia at golden sunset","sunset-tree":"An acacia silhouetted against a blazing African sunset","boy-vehicle":"A smiling young boy in a safari vehicle beside his guide","zanzibar-dhow":"A traveller watching traditional dhows on Zanzibar's turquoise water","migration-watchers":"Travellers on a safari vehicle watching the wildebeest migration","zanzibar-pier":"A wooden pier with a thatched gazebo over Zanzibar's clear water","zanzibar-turquoise":"Turquoise water and boats along a white-sand Zanzibar beach","zanzibar-aerial":"Aerial view of Zanzibar's turquoise shallows and traditional boats","zebras-mist":"Two zebras standing close together in soft morning light","wildebeest-grass":"Two wildebeest in pale grass with the migration herd behind","zebras-pair":"Two zebras nuzzling on the open plains"};
+  /* Every page declares how deep it sits (meta wa-root, e.g. '../../'), so links and assets
+     resolve correctly from /, /safaris/ and /safaris/<id>/ alike. */
+  var ROOT = (document.querySelector('meta[name="wa-root"]') || {}).content || '';
+  function u(path) { return ROOT + path; }
+  function link(section, id, query) {
+    if (section === 'home') return (ROOT || './') + (query ? '#' + query : '');
+    return ROOT + section + '/' + (id ? encodeURIComponent(id) + '/' : '') + (query ? '?' + query : '');
+  }
 
   var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
   function img(name, sizes, alt, extra) {
     var l = IMG_W[name] || 2400;
-    return '<img src="assets/img/' + name + '-m.webp" srcset="assets/img/' + name + '-s.webp 640w, assets/img/' + name + '-m.webp 1280w, assets/img/' + name + '-l.webp ' + l + 'w" sizes="' + (sizes || '100vw') + '" alt="' + (alt || '') + '" loading="lazy" decoding="async"' + (extra ? ' ' + extra : '') + '>';
+    var b = ROOT + 'assets/img/' + name;
+    return '<img src="' + b + '-m.webp" srcset="' + b + '-s.webp 640w, ' + b + '-t.webp 960w, ' + b + '-m.webp 1280w, ' + b + '-l.webp ' + l + 'w" sizes="' + (sizes || '100vw') + '" alt="' + esc(alt || '') + '" width="1280" height="' + (IMG_H[name] || 853) + '"' + (extra && /loading=/.test(extra) ? '' : (extra && /fetchpriority/.test(extra) ? ' loading="eager"' : ' loading="lazy"')) + ' decoding="async"' + (extra ? ' ' + extra : '') + '>';
   }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
   function money(n) { return '$' + Number(n).toLocaleString('en-US'); }
@@ -33,7 +45,7 @@ window.WILDARA_CONFIG = {
   var THEME_LABEL = { migration: 'Great Migration', zanzibar: 'Bush & Beach', culture: 'Culture', bigfive: 'Big Five' };
   function cardHTML(s, sizes) {
     var tag = s.themes.length ? THEME_LABEL[s.themes[0]] : (s.tier !== 'Classic' ? s.tier : 'Private safari');
-    return '<a class="scard" href="safari.html?id=' + encodeURIComponent(s.id) + '" data-cursor="Discover" data-id="' + esc(s.id) + '">' +
+    return '<a class="scard" href="' + link('safaris', s.id) + '" data-cursor="Discover" data-id="' + esc(s.id) + '">' +
       img(s.images[0], sizes || '(max-width: 760px) 90vw, 440px', '') +
       '<div class="scard__top"><span class="pill">' + s.days + ' days</span><span class="pill">' + esc(tag) + '</span></div>' +
       '<div class="scard__panel glass"><h3>' + esc(s.title) + '</h3><p class="scard__dest">' + esc(s.destinations) + '</p>' +
@@ -303,6 +315,7 @@ window.WILDARA_CONFIG = {
     }).join('') + '</div>';
   }
   function faqSchema(faqs) {
+    if (document.querySelector('script[type="application/ld+json"][data-faq]')) return;
     var s = document.createElement('script'); s.type = 'application/ld+json';
     s.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(function (f) { return { '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }; }) });
     document.head.appendChild(s);
@@ -311,7 +324,7 @@ window.WILDARA_CONFIG = {
   /* ---------- Uniform gallery slider (with lightbox) ---------- */
   function sliderHTML(images, caption) {
     return '<div class="slider"><div class="slider__track">' + images.map(function (n, i) {
-      return '<figure class="slide" tabindex="0" data-cursor="View" data-full="assets/img/' + n + '-l.webp">' + img(n, '(max-width: 760px) 82vw, 460px', (caption || 'Safari') + ' photograph ' + (i + 1)) + '</figure>';
+      return '<figure class="slide" tabindex="0" data-cursor="View" data-full="' + ROOT + 'assets/img/' + n + '-l.webp">' + img(n, '(max-width: 760px) 82vw, 460px', IMG_ALT[n] || caption || '') + '</figure>';
     }).join('') + '</div><div class="slider__bar"><span class="slider__count"><span data-cur>01</span> / ' + ('0' + images.length).slice(-2) + '</span>' +
       '<div class="slider__btns"><button class="round-btn dark" type="button" data-prev aria-label="Previous photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>' +
       '<button class="round-btn dark" type="button" data-next aria-label="Next photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></div></div>';
@@ -347,14 +360,12 @@ window.WILDARA_CONFIG = {
 
   /* ---------- Active navigation item ---------- */
   function markNav() {
-    var file = (location.pathname.split('/').pop() || 'index.html').replace('.html', '');
-    var map = { index: 'home', '': 'home', safaris: 'safaris', safari: 'safaris', destinations: 'destinations', destination: 'destinations', experiences: 'experiences', experience: 'experiences', story: 'story', journal: 'journal', article: 'journal', contact: 'contact' };
-    var key = map[file]; if (!key) return;
+    var key = (document.querySelector('meta[name="wa-nav"]') || {}).content; if (!key) return;
     $$('[data-nav="' + key + '"]').forEach(function (a) { a.setAttribute('aria-current', 'page'); });
   }
 
   /* ---------- Boot ---------- */
-  window.WA = { $: $, $$: $$, img: img, esc: esc, money: money, cardHTML: cardHTML, ccardHTML: ccardHTML, toast: toast, observe: observe, splitText: splitText, initTrack: initTrack, initSlider: initSlider, sliderHTML: sliderHTML, faqHTML: faqHTML, faqSchema: faqSchema, fmtDate: fmtDate, clamp: clamp, lerp: lerp, reduce: mqReduce, ARROW: ARROW, THEME_LABEL: THEME_LABEL };
+  window.WA = { IMG_ALT: IMG_ALT, root: ROOT, u: u, link: link, $: $, $$: $$, img: img, esc: esc, money: money, cardHTML: cardHTML, ccardHTML: ccardHTML, toast: toast, observe: observe, splitText: splitText, initTrack: initTrack, initSlider: initSlider, sliderHTML: sliderHTML, faqHTML: faqHTML, faqSchema: faqSchema, fmtDate: fmtDate, clamp: clamp, lerp: lerp, reduce: mqReduce, ARROW: ARROW, THEME_LABEL: THEME_LABEL };
 
   function boot() {
     markNav(); initNav(); initCursor(); initMagnetic(); initCurtain(); initParallax(); initCounters(); initLightbox(); initFooter();

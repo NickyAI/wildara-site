@@ -1,0 +1,4 @@
+# Optional tooling (the website itself needs none of this)
+Pillow>=10        # tools/proc.py, tools/og.py
+python-docx>=1.1  # tools/parse.py
+playwright>=1.45  # tools/tests/*.py (uses your installed Google Chrome)
