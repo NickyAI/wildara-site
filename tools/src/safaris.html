@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+[[head:Tanzania Safaris · Wildara Africa Safaris|Twenty-nine private Tanzania safaris, from two-day escapes to twelve-day Great Migration journeys with Zanzibar. Filter by season, theme, destination and length.]]
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+[[nav:dark]]
+
+<main id="main">
+  <section class="page-hero" aria-labelledby="page-h">
+    <div class="page-hero__bg">[[img:zebra-herd|100vw||fetchpriority="high"]]</div>
+    <div class="wrap page-hero__inner">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Safaris</span></nav>
+      <h1 id="page-h" data-split>Journeys into <em>the wild.</em></h1>
+      <p class="lead" data-reveal style="--d:2">Twenty-nine private itineraries across northern Tanzania. Every one can be reshaped around your dates, your pace and what draws you to Africa.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:3rem">
+    <div class="wrap">
+      <div class="filters glass glass--light" role="search" aria-label="Filter safaris">
+        <div class="chips" id="themeChips" role="group" aria-label="Theme">
+          <button class="chip" type="button" data-theme="" aria-pressed="true">All</button>
+          <button class="chip" type="button" data-theme="migration" aria-pressed="false">Great Migration</button>
+          <button class="chip" type="button" data-theme="bigfive" aria-pressed="false">Big Five</button>
+          <button class="chip" type="button" data-theme="zanzibar" aria-pressed="false">Bush &amp; Beach</button>
+          <button class="chip" type="button" data-theme="culture" aria-pressed="false">Culture</button>
+        </div>
+        <div class="filters__right">
+          <label class="sr-only" for="fDest">Destination</label>
+          <select id="fDest">
+            <option value="">All destinations</option>
+            <option value="serengeti">Serengeti</option>
+            <option value="ngorongoro">Ngorongoro</option>
+            <option value="tarangire">Tarangire</option>
+            <option value="manyara">Lake Manyara</option>
+            <option value="eyasi">Lake Eyasi</option>
+            <option value="arusha">Arusha NP</option>
+            <option value="zanzibar">Zanzibar</option>
+          </select>
+          <label class="sr-only" for="fDur">Duration</label>
+          <select id="fDur">
+            <option value="">Any length</option>
+            <option value="short">2 to 4 days</option>
+            <option value="mid">5 to 7 days</option>
+            <option value="long">8+ days</option>
+          </select>
+          <label class="sr-only" for="fSort">Sort by</label>
+          <select id="fSort">
+            <option value="days">Shortest first</option>
+            <option value="days-desc">Longest first</option>
+            <option value="price">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+          </select>
+        </div>
+      </div>
+      <p class="result-count" id="resultCount" aria-live="polite" style="margin:-1.6rem 0 1.6rem"></p>
+      <div class="sgrid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="cta-h" style="min-height:70vh">
+    <div class="cta__bg" data-parallax>[[img:sunset-acacia|100vw||]]</div>
+    <div class="cta__inner">
+      <span class="eyebrow" data-reveal>Not quite right?</span>
+      <h2 id="cta-h" data-split>Let us draw you a <em>new</em> route.</h2>
+      <p data-reveal style="--d:2">Every itinerary is a starting point. Tell us your dates and dreams and we will tailor the journey around you.</p>
+      <div class="cta__actions" data-reveal style="--d:3"><a class="btn btn--light" href="plan.html">Design a custom safari [[arrow]]</a></div>
+    </div>
+  </section>
+</main>
+
+[[footer]]
+[[chrome]]
+<script src="assets/js/safaris-data.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+<script src="assets/js/safaris.js" defer></script>
+</body>
+</html>

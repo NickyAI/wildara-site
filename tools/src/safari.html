@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+[[head:Safari Itinerary · Wildara Africa Safaris|A private Tanzania safari itinerary by Wildara Africa Safaris, with route map, day-by-day programme, lodges and transparent pricing.]]
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+[[nav:dark]]
+
+<main id="main">
+  <section class="page-hero" aria-labelledby="s-title" style="min-height:88vh">
+    <div class="page-hero__bg" id="sHeroBg"></div>
+    <div class="wrap page-hero__inner">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span aria-hidden="true">/</span><a href="safaris.html">Safaris</a><span aria-hidden="true">/</span><span aria-current="page" id="sCrumb">Itinerary</span></nav>
+      <h1 id="s-title" style="max-width:18ch">Loading journey…</h1>
+      <div class="facts glass" id="sFacts" data-reveal style="--d:2"></div>
+      <div class="cta__actions" style="justify-content:flex-start;margin-top:1.6rem;--d:3" data-reveal>
+        <a class="btn btn--light" id="heroCta" href="plan.html">Request this safari [[arrow]]</a>
+        <a class="btn btn--glass" href="#route">View the route</a>
+      </div>
+    </div>
+  </section>
+
+  <nav class="subnav" aria-label="On this page">
+    <div class="wrap subnav__inner">
+      <div class="subnav__links">
+        <a href="#overview">Overview</a><a href="#route">Route map</a><a href="#days">Day by day</a><a href="#gallery">Gallery</a><a href="#lodges">Lodges</a><a href="#prices">Prices</a><a href="#included">Included</a><a href="#faqs">FAQs</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <span class="subnav__price">From <b id="subPrice">$0</b> pp</span>
+        <a class="btn" id="subCta" href="plan.html">Enquire</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="section" id="sBody" style="padding-top:clamp(3rem,6vw,5rem)">
+    <div class="wrap">
+      <div class="detail-grid">
+        <div>
+          <div class="block detail-intro" id="overview"></div>
+
+          <div class="block" id="route" style="scroll-margin-top:5rem">
+            <span class="eyebrow" data-reveal>Route map</span>
+            <h2 class="h2" data-split style="margin:1rem 0 .8rem">Where the road <em>leads.</em></h2>
+            <p class="lead" style="max-width:56ch">Follow the journey across northern Tanzania. Hover or tap a numbered stop to see the days you spend there.</p>
+            <div class="wmap-wrap" id="routeMap" style="margin-top:2rem"></div>
+            <div class="map-legend"><span><b>1</b> Stop, in order</span><span><i></i> Safari drive</span><span><i class="fly"></i> Flight</span><span><i class="park"></i> National park</span><span><i class="road"></i> Main road</span></div>
+            <ol class="chips-list" id="routeStops" aria-label="Stops on this route"></ol>
+          </div>
+
+          <div class="block" id="days" style="scroll-margin-top:5rem">
+            <span class="eyebrow" data-reveal>Day by day</span>
+            <h2 class="h2" data-split style="margin-top:1rem">The <em>journey.</em></h2>
+            <div class="timeline" id="sTimeline"><div class="timeline__line"><span></span></div></div>
+          </div>
+        </div>
+
+        <aside class="booking glass glass--light" aria-label="Price and enquiry">
+          <span class="eyebrow eyebrow--plain">Private safari</span>
+          <h3 id="bTitle" style="margin-top:.7rem"></h3>
+          <div class="booking__price"><small>Per person, for <span id="bGroupLbl">2 travellers</span></small><b id="bPrice">$0</b><span>USD, park fees included</span></div>
+          <div class="optgroup" style="margin-top:0">
+            <label id="bTravLbl">Travellers</label>
+            <div class="stepper" role="group" aria-labelledby="bTravLbl">
+              <button type="button" id="bMinus" aria-label="Fewer travellers">−</button>
+              <output id="bCount" aria-live="polite">2 travellers</output>
+              <button type="button" id="bPlus" aria-label="More travellers">+</button>
+            </div>
+          </div>
+          <div class="booking__total"><span>Estimated total</span><b id="bTotal">$0</b></div>
+          <a class="btn" id="bCta" href="plan.html">Enquire about this safari [[arrow]]</a>
+          <a class="btn btn--ghost" href="contact.html" style="margin-top:.6rem">Ask a question</a>
+          <p class="booking__note">No payment now. We reply with a tailored proposal, usually within one working day.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-ivory" id="gallery" aria-labelledby="gal-h" style="scroll-margin-top:4rem">
+    <div class="wrap">
+      <div class="sec-head"><div><span class="eyebrow" data-reveal>Gallery</span><h2 class="h2" id="gal-h" data-split style="margin-top:1rem">Moments along <em>the way.</em></h2></div><p class="lead" data-reveal>Scenes from the parks on this route. Drag, swipe or use the arrows, and tap any photo to enlarge it.</p></div>
+      <div id="sGallery"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="block" id="lodges" style="scroll-margin-top:5rem">
+        <span class="eyebrow" data-reveal>Where you'll stay</span>
+        <h2 class="h2" data-split style="margin-top:1rem">Lodges &amp; <em>camps.</em></h2>
+        <div style="overflow-x:auto"><table class="table" id="sAcc"><thead><tr><th scope="col">Accommodation</th><th scope="col">Location</th><th scope="col">Nights</th><th scope="col">Meal basis</th></tr></thead><tbody></tbody></table></div>
+      </div>
+
+      <div class="block split split--top" id="prices" style="scroll-margin-top:5rem">
+        <div>
+          <span class="eyebrow" data-reveal>Rates</span>
+          <h2 class="h2" data-split style="margin-top:1rem">Price per <em>person.</em></h2>
+          <p class="lead" style="margin-top:1rem">Quoted in USD for a private safari. The larger your group, the lower the rate per traveller. A 30% deposit secures your dates; see our <a href="terms.html" style="text-decoration:underline">terms</a>.</p>
+          <a class="btn" id="priceCta" href="plan.html" style="margin-top:2rem">Check availability [[arrow]]</a>
+        </div>
+        <table class="table" id="sPrices"><thead><tr><th scope="col">Group size</th><th scope="col">Price per person (USD)</th></tr></thead><tbody></tbody></table>
+      </div>
+
+      <div class="block incl" id="included" style="scroll-margin-top:5rem">
+        <div><h3>Included</h3><ul id="sInc"></ul></div>
+        <div><h3>Not included</h3><ul class="ex" id="sExc"></ul></div>
+      </div>
+
+      <div class="block">
+        <span class="eyebrow" data-reveal>Make it yours</span>
+        <h2 class="h3" style="margin:1rem 0 1.2rem">Optional experiences, on request</h2>
+        <div class="season-tags">
+          <a class="tag" href="experience.html?id=hot-air-balloon">Hot-air balloon safari</a><a class="tag" href="experience.html?id=walking-safaris">Guided walking safari</a><a class="tag" href="experience.html?id=bush-dining">Bush dinner or sundowner</a>
+          <a class="tag" href="experience.html?id=honeymoons">Celebrations</a><span class="tag">Domestic flights</span><a class="tag" href="experience.html?id=cultural-encounters">Cultural experiences</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-ivory" id="faqs" aria-labelledby="faq-h" style="scroll-margin-top:4rem">
+    <div class="wrap faq-grid">
+      <div>
+        <span class="eyebrow" data-reveal>Good to know</span>
+        <h2 class="h2" id="faq-h" data-split style="margin-top:1rem">Questions about <em>this safari.</em></h2>
+        <p class="lead" style="margin-top:1.2rem">Can't find your answer? Our team in Arusha is happy to help.</p>
+        <a class="btn btn--ghost" href="contact.html" style="margin-top:1.6rem">Contact us</a>
+      </div>
+      <div id="sFaq"></div>
+    </div>
+  </section>
+
+  <section class="section featured" aria-labelledby="rel-h">
+    <div class="wrap featured__head">
+      <div><span class="eyebrow" data-reveal>Keep exploring</span><h2 class="h2" id="rel-h" data-split style="margin-top:1.2rem">You may also <em>love.</em></h2></div>
+      <div class="featured__ctrl">
+        <button class="round-btn" type="button" data-track-prev aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button class="round-btn" type="button" data-track-next aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div class="track" id="relTrack"></div>
+    <div class="track__progress" aria-hidden="true"><span></span></div>
+  </section>
+</main>
+
+[[footer]]
+[[lightbox]]
+[[chrome]]
+[[scripts:safaris-data,main,map,safari]]
+</body>
+</html>
