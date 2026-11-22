@@ -158,6 +158,7 @@ ORG = {"@context": "https://schema.org", "@type": "TravelAgency", "@id": ORG_ID,
        "logo": f"{BASE}/assets/brand/favicon.png", "image": og_image(CFG["default_og_image"]),
        "description": "Private safaris across northern Tanzania: the Serengeti, Ngorongoro Crater, Tarangire, Lake Manyara, Lake Eyasi and Zanzibar.",
        "address": {"@type": "PostalAddress", "addressLocality": "Arusha", "addressCountry": "TZ"},
+       "telephone": CFG["phone"].replace(" ", ""), "email": CFG["email"], "sameAs": [CFG["facebook"], CFG["instagram"]],
        "areaServed": {"@type": "Country", "name": "Tanzania"}}
 WEBSITE = {"@context": "https://schema.org", "@type": "WebSite", "@id": f"{BASE}/#website", "name": BRAND, "url": f"{BASE}/",
            "inLanguage": "en", "publisher": {"@id": ORG_ID}}
@@ -282,10 +283,14 @@ FOOTER = '''<footer class="footer on-dark">
         <ul>
           <li><a href="contact.html">Contact us</a></li>
           <li><a href="plan.html">Plan my safari</a></li>
-          <li data-contact="email" hidden><a href="#"></a></li>
-          <li data-contact="phone" hidden><a href="#"></a></li>
-          <li data-contact="whatsapp" hidden><a href="#" target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href="mailto:{{email}}">{{email}}</a></li>
+          <li><a href="tel:{{tel}}">{{phone}}</a></li>
+          <li><a href="https://wa.me/{{whatsapp}}" target="_blank" rel="noopener">WhatsApp us</a></li>
           <li><span class="footer__muted">Arusha, Tanzania</span></li>
+        </ul>
+        <ul class="social" aria-label="Wildara on social media">
+          <li><a href="{{facebook}}" target="_blank" rel="noopener me" aria-label="Facebook (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg></a></li>
+          <li><a href="{{instagram}}" target="_blank" rel="noopener me" aria-label="Instagram (opens in a new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/></svg></a></li>
         </ul>
       </div>
     </div>
@@ -305,7 +310,21 @@ LIGHTBOX = '''<div class="lightbox" id="lightbox" role="dialog" aria-modal="true
 
 CHROME = '''<div class="cursor is-hidden" aria-hidden="true"><div class="cursor__ring"><span class="cursor__label"></span></div><div class="cursor__dot"></div></div>
 <div class="curtain" aria-hidden="true"><div class="curtain__panel"><img src="assets/brand/w-icon-almond.webp" alt="" width="1000" height="619"></div></div>
-<div class="toast glass" role="status" aria-live="polite"></div>'''
+<div class="toast glass" role="status" aria-live="polite"></div>
+<aside class="wa-dock" aria-label="WhatsApp chat"><a class="wa-float" href="https://wa.me/{{whatsapp}}?text={{wa_text}}" target="_blank" rel="noopener" aria-label="Chat with Wildara on WhatsApp (opens in a new tab)">
+  <span class="wa-float__label" aria-hidden="true"><small>Questions?</small>Chat with us</span>
+  <span class="wa-float__btn"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3.2A12.7 12.7 0 0 0 5.1 22.4L3.3 28.8l6.6-1.7A12.7 12.7 0 1 0 16 3.2zm0 23.2a10.5 10.5 0 0 1-5.4-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.5 10.5 0 1 1 16 26.4zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.6 8.6 0 0 1-4.3-3.8c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.6 3.6 0 0 0-1.1 2.7 6.3 6.3 0 0 0 1.3 3.3c.2.2 2.2 3.4 5.4 4.8 2 .9 2.8.9 3.8.8.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5l-.6-.3z"/></svg></span>
+</a></aside>'''
+
+
+def _contacts(s):
+    return (s.replace("{{email}}", CFG["email"]).replace("{{phone}}", CFG["phone"])
+             .replace("{{tel}}", CFG["phone"].replace(" ", "")).replace("{{whatsapp}}", CFG["whatsapp"])
+             .replace("{{facebook}}", e(CFG["facebook"])).replace("{{instagram}}", e(CFG["instagram"]))
+             .replace("{{wa_text}}", "Hello%20Wildara%2C%20I%27d%20love%20to%20plan%20a%20safari."))
+
+
+FOOTER, CHROME = _contacts(FOOTER), _contacts(CHROME)
 
 
 def scripts(names):

@@ -2,11 +2,11 @@
    Wildara Africa Safaris · shared interactions
    ========================================================================== */
 
-/* ---- Site configuration: fill these in before launch ---- */
+/* ---- Site configuration (contact details also live in tools/site.json for the build) ---- */
 window.WILDARA_CONFIG = {
-  email: '',          // e.g. 'hello@your-domain.com'  (shown in footer + used as enquiry fallback)
-  phone: '',          // e.g. '+255 7xx xxx xxx'
-  whatsapp: '',       // digits only, e.g. '2557xxxxxxxx'
+  email: 'info@wildaraafricasafaris.com',   // enquiry fallback (mailto)
+  phone: '+255 722 833 994',
+  whatsapp: '255722833994',   // digits only
   formEndpoint: ''    // optional: URL that accepts POSTed JSON enquiries (Formspree, Netlify, your CRM...)
 };
 
